@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#172554">
+<title>SHREE ERP | Business Suite</title>
+<style>
+:root {
+  --nav:#172554;
+  --primary:#4338ca;
+  --bg:#f3f5fa;
+  --white:#fff;
+  --text:#172033;
+  --muted:#778197;
+  --line:#e3e7ef;
+  --green:#07875c;
+  --red:#d63f52;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:Arial,system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button,input,select { font:inherit; }
+button { cursor:pointer; }
+.layout { display:flex;min-height:100vh; }
+.sidebar {
+  width:240px;background:var(--nav);color:white;
+  padding:20px 13px;flex-shrink:0;
+}
+.brand {
+  font-size:23px;font-weight:800;padding:8px 12px;
+}
+.brand small {
+  display:block;font-size:10px;letter-spacing:2px;
+  color:#a5b4fc;margin-top:5px;
+}
+.nav-label {
+  color:#9eacd0;font-size:10px;
+  letter-spacing:1.5px;padding:23px 12px 8px;
+}
+.nav-btn {
+  width:100%;border:0;background:transparent;color:#d8def0;
+  padding:13px 12px;text-align:left;border-radius:8px;
+  margin:2px 0;font-size:13px;
+}
+.nav-btn:hover,.nav-btn.active {
+  background:#343f75;color:white;
+}
+.main { flex:1;min-width:0; }
+.topbar {
+  height:68px;background:white;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 25px;gap:12px;
+}
+.topbar strong { font-size:14px; }
+.topbar input {
+  width:min(300px,45vw);padding:10px 12px;
+  border:1px solid var(--line);border-radius:8px;
+}
+.menu { display:none; }
+.content { padding:25px;max-width:1500px;margin:auto; }
+.page-head {
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;margin-bottom:22px;
+}
+h1 { font-size:25px;margin:0 0 7px; }
+.sub { color:var(--muted);font-size:12px; }
+.btn {
+  border:1px solid var(--line);background:white;
+  border-radius:8px;padding:10px 13px;font-size:12px;
+}
+.btn.primary { background:var(--primary);color:white;border-color:var(--primary); }
+.cards {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;margin-bottom:18px;
+}
+.card,.panel {
+  background:white;border:1px solid var(--line);
+  border-radius:12px;
+}
+.card { padding:18px; }
+.card label { color:var(--muted);font-size:12px; }
+.card h2 { margin:13px 0 5px;font-size:25px; }
+.panel { margin-bottom:18px;overflow:hidden; }
+.panel-head {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:17px 18px;border-bottom:1px solid var(--line);gap:10px;
+}
+.panel-head h3 { margin:0;font-size:14px; }
+.toolbar { padding:15px;display:flex;gap:9px;flex-wrap:wrap; }
+.toolbar input {
+  flex:1;min-width:160px;padding:10px;
+  border:1px solid var(--line);border-radius:8px;
+}
+table { width:100%;border-collapse:collapse; }
+th {
+  text-align:left;background:#f8f9fc;color:var(--muted);
+  font-size:10px;padding:13px 16px;white-space:nowrap;
+}
+td {
+  padding:13px 16px;border-top:1px solid var(--line);
+  font-size:12px;
+}
+.table-wrap { overflow-x:auto; }
+.status {
+  display:inline-block;padding:5px 8px;border-radius:20px;
+  background:#e1f7ed;color:var(--green);font-size:10px;
+}
+.status.low { background:#fff0d8;color:#a76300; }
+.view { display:none; }
+.view.active { display:block; }
+.quick {
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;padding:16px;
+}
+.quick button { padding:17px 8px; }
+.form-grid {
+  display:grid;grid-template-columns:1fr 1fr;gap:13px;
+}
+.field label {
+  display:block;font-size:12px;margin-bottom:6px;color:var(--muted);
+}
+.field input,.field select {
+  width:100%;padding:11px;border:1px solid var(--line);
+  border-radius:8px;background:white;
+}
+.modal-bg {
+  position:fixed;inset:0;background:#0008;z-index:10;
+  display:none;align-items:center;justify-content:center;padding:14px;
+}
+.modal-bg.show { display:flex; }
+.modal {
+  width:min(520px,100%);max-height:90vh;overflow:auto;
+  background:white;border-radius:14px;padding:20px;
+}
+.modal h2 { font-size:18px;margin-top:0; }
+.modal-actions { display:flex;justify-content:flex-end;gap:9px;margin-top:18px; }
+.toast {
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  background:#172033;color:white;padding:12px 17px;
+  border-radius:9px;display:none;font-size:12px;z-index:20;
+}
+.toast.show { display:block; }
+@media(max-width:950px) {
+  .sidebar { width:205px; }
+  .content { padding:18px; }
+  .cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:650px) {
+  .sidebar {
+    position:fixed;z-index:8;top:0;bottom:0;left:-260px;
+    width:245px;transition:left .2s;
+  }
+  .sidebar.open { left:0; }
+  .menu { display:inline-block; }
+  .topbar { height:60px;padding:0 12px; }
+  .topbar input { width:42vw; }
+  .content { padding:15px 11px; }
+  h1 { font-size:22px; }
+  .cards { gap:9px; }
+  .card { padding:13px; }
+  .card h2 { font-size:20px; }
+  .quick { grid-template-columns:repeat(2,1fr);padding:12px; }
+  .form-grid { grid-template-columns:1fr; }
+  .hide-mobile { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">✦ SHREE ERP<small>BUSINESS MANAGEMENT</small></div>
+  <div class="nav-label">WORKSPACE</div>
+  <button class="nav-btn active" data-view="dashboard">▦ Dashboard</button>
+  <button class="nav-btn" data-view="billing">▤ Sales Billing</button>
+  <button class="nav-btn" data-view="purchases">⇩ Purchases</button>
+  <button class="nav-btn" data-view="products">▣ Products & Stock</button>
+  <div class="nav-label">ACCOUNTS</div>
+  <button class="nav-btn" data-view="customers">♙ Customers</button>
+  <button class="nav-btn" data-view="suppliers">♧ Suppliers</button>
+  <button class="nav-btn" data-view="expenses">₹ Expenses</button>
+  <button class="nav-btn" data-view="reports">▥ Reports</button>
+  <button class="nav-btn" data-view="settings">⚙ Settings</button>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="btn menu" onclick="toggleMenu()">☰</button>
+    <strong id="pageTitle">Dashboard</strong>
+  </div>
+  <input id="search" placeholder="Search products..." oninput="searchProducts(this.value)">
+</header>
+
+<div class="content">
+<section class="view active" id="dashboard">
+  <div class="page-head">
+    <div><h1>Business Dashboard</h1>
+    <div class="sub">Welcome to your SHREE ERP workspace.</div></div>
+    <button class="btn primary" onclick="openBill()">＋ Create Bill</button>
+  </div>
+  <div class="cards">
+    <div class="card"><label>Total Sales</label><h2 id="totalSales">₹0</h2><div class="sub">Recorded invoices</div></div>
+    <div class="card"><label>Total Products</label><h2 id="totalProducts">0</h2><div class="sub">Items in inventory</div></div>
+    <div class="card"><label>Stock Quantity</label><h2 id="stockQty">0</h2><div class="sub">Units available</div></div>
+    <div class="card"><label>Low Stock</label><h2 id="lowStock">0</h2><div class="sub">Needs attention</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h3>Quick Actions</h3></div>
+    <div class="quick">
+      <button class="btn" onclick="openBill()">＋ New Sales Bill</button>
+      <button class="btn" onclick="openProduct()">＋ Add Product</button>
+      <button class="btn" onclick="showView('purchases')">⇩ Purchase Entry</button>
+      <button class="btn" onclick="showView('reports')">▥ Reports</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h3>Recent Sales</h3><button class="btn" onclick="showView('billing')">View All</button></div>
+    <div class="table-wrap"><table><thead><tr><th>INVOICE</th><th>DATE</th><th>ITEM</th><th>QTY</th><th>TOTAL</th></tr></thead><tbody id="recentRows"></tbody></table></div>
+  </div>
+</section>
+
+<section class="view" id="billing">
+  <div class="page-head"><div><h1>Sales Billing</h1><div class="sub">Create and manage sales invoices.</div></div><button class="btn primary" onclick="openBill()">＋ New Bill</button></div>
+  <div class="panel"><div class="panel-head"><h3>Invoice Register</h3></div><div class="table-wrap"><table><thead><tr><th>INVOICE</th><th>DATE</th><th>ITEM</th><th>QTY</th><th>TOTAL</th></tr></thead><tbody id="billRows"></tbody></table></div></div>
+</section>
+
+<section class="view" id="products">
+  <div class="page-head"><div><h1>Products & Stock</h1><div class="sub">Manage product price, SKU and quantity.</div></div><button class="btn primary" onclick="openProduct()">＋ Add Product</button></div>
+  <div class="panel"><div class="toolbar"><input placeholder="Search product name or SKU..." oninput="searchProducts(this.value)"></div><div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>SKU</th><th>CATEGORY</th><th>SELL PRICE</th><th>COST</th><th>STOCK</th><th>STATUS</th></tr></thead><tbody id="productRows"></tbody></table></div></div>
+</section>
+
+<section class="view" id="purchases">
+  <div class="page-head"><div><h1>Purchases</h1><div class="sub">Purchase entry will be expanded in the next step.</div></div></div>
+  <div class="panel"><div class="panel-head"><h3>Purchase Register</h3></div><div class="toolbar"><p class="sub">Phase 1 interface. Full supplier purchase workflow is coming in the next build step.</p></div></div>
+</section>
+<section class="view" id="customers"><div class="page-head"><div><h1>Customers</h1><div class="sub">Customer master and ledger.</div></div></div><div class="panel"><div class="toolbar">Customer management interface reserved for Phase 2.</div></div></section>
+<section class="view" id="suppliers"><div class="page-head"><div><h1>Suppliers</h1><div class="sub">Supplier master and payable ledger.</div></div></div><div class="panel"><div class="toolbar">Supplier management interface reserved for Phase 2.</div></div></section>
+<section class="view" id="expenses"><div class="page-head"><div><h1>Expenses</h1><div class="sub">Business expense tracking.</div></div></div><div class="panel"><div class="toolbar">Expense tracking will be added in the next build step.</div></div></section>
+<section class="view" id="reports"><div class="page-head"><div><h1>Reports</h1><div class="sub">Sales and inventory overview.</div></div><button class="btn" onclick="window.print()">Print</button></div><div class="cards"><div class="card"><label>Sales</label><h2 id="reportSales">₹0</h2></div><div class="card"><label>Products</label><h2 id="reportProducts">0</h2></div></div></section>
+<section class="view" id="settings"><div class="page-head"><div><h1>Settings</h1><div class="sub">Business profile.</div></div></div><div class="panel" style="padding:18px"><div class="field"><label>Business Name</label><input id="businessName" value="SHREE ERP Demo"></div><br><button class="btn primary" onclick="saveSettings()">Save Settings</button><p class="sub">This first phase saves demo records only in this browser.</p></div></section>
+</div>
+</main>
+</div>
+
+<div class="modal-bg" id="modalBg"><div class="modal">
+  <h2 id="modalTitle">New Record</h2><div id="modalBody"></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="modalSave">Save</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY="shree_erp_phase1";
+const starter={
+ products:[
+  {id:1,name:"Notebook A4",sku:"ST-001",category:"Stationery",price:120,cost:75,stock:40,min:8},
+  {id:2,name:"Wireless Mouse",sku:"EL-002",category:"Electronics",price:650,cost:400,stock:12,min:5},
+  {id:3,name:"Cotton T-Shirt",sku:"AP-003",category:"Apparel",price:499,cost:280,stock:4,min:8}
+ ],
+ bills:[]
+};
+let data;
+try{data=JSON.parse(localStorage.getItem(KEY))||structuredClone(starter)}catch(e){data=structuredClone(starter)}
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function persist(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+function toggleMenu(){document.getElementById("sidebar").classList.toggle("open")}
+function showView(id){
+ document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
+ document.getElementById("pageTitle").textContent=({dashboard:"Dashboard",billing:"Sales Billing",products:"Products & Stock",purchases:"Purchases",customers:"Customers",suppliers:"Suppliers",expenses:"Expenses",reports:"Reports",settings:"Settings"})[id]||id;
+ document.getElementById("sidebar").classList.remove("open");
+}
+document.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
+function render(){
+ document.getElementById("totalSales").textContent=money(data.bills.reduce((s,b)=>s+b.total,0));
+ document.getElementById("totalProducts").textContent=data.products.length;
+ document.getElementById("stockQty").textContent=data.products.reduce((s,p)=>s+p.stock,0);
+ document.getElementById("lowStock").textContent=data.products.filter(p=>p.stock<=p.min).length;
+ document.getElementById("reportSales").textContent=document.getElementById("totalSales").textContent;
+ document.getElementById("reportProducts").textContent=data.products.length;
+ document.getElementById("productRows").innerHTML=data.products.map(p=>`<tr><td><b>${safe(p.name)}</b></td><td>${safe(p.sku)}</td><td>${safe(p.category)}</td><td>${money(p.price)}</td><td>${money(p.cost)}</td><td>${p.stock}</td><td><span class="status ${p.stock<=p.min?'low':''}">${p.stock<=p.min?'Low Stock':'In Stock'}</span></td></tr>`).join("");
+ const rows=data.bills.slice().reverse().map(b=>`<tr><td>${safe(b.invoice)}</td><td>${safe(b.date)}</td><td>${safe(b.item)}</td><td>${b.qty}</td><td><b>${money(b.total)}</b></td></tr>`).join("")||'<tr><td colspan="5">No invoices yet. Create your first bill.</td></tr>';
+ document.getElementById("billRows").innerHTML=rows;document.getElementById("recentRows").innerHTML=rows;
+}
+function searchProducts(q){const s=q.toLowerCase();document.querySelectorAll("#productRows tr").forEach(r=>r.style.display=r.innerText.toLowerCase().includes(s)?"":"none")}
+function openModal(title,html,fn){document.getElementById("modalTitle").textContent=title;document.getElementById("modalBody").innerHTML=html;document.getElementById("modalSave").onclick=fn;document.getElementById("modalBg").classList.add("show")}
+function closeModal(){document.getElementById("modalBg").classList.remove("show")}
+function openProduct(){
+ openModal("Add Product",`<div class="form-grid">
+ <div class="field"><label>Product Name *</label><input id="pName"></div>
+ <div class="field"><label>SKU / Code</label><input id="pSku"></div>
+ <div class="field"><label>Category</label><input id="pCat" value="General"></div>
+ <div class="field"><label>Selling Price *</label><input id="pPrice" type="number" min="0"></div>
+ <div class="field"><label>Cost Price</label><input id="pCost" type="number" min="0" value="0"></div>
+ <div class="field"><label>Opening Stock</label><input id="pStock" type="number" min="0" value="0"></div>
+ <div class="field"><label>Minimum Stock</label><input id="pMin" type="number" min="0" value="5"></div></div>`,()=>{
+ const name=document.getElementById("pName").value.trim(),price=document.getElementById("pPrice").value;
+ if(!name||price==="")return toast("Enter product name and selling price.");
+ data.products.push({id:Date.now(),name,sku:document.getElementById("pSku").value||"SKU-"+Date.now().toString().slice(-5),category:document.getElementById("pCat").value||"General",price:Number(price),cost:Number(document.getElementById("pCost").value)||0,stock:Math.max(0,Number(document.getElementById("pStock").value)||0),min:Math.max(0,Number(document.getElementById("pMin").value)||0)});
+ persist();closeModal();toast("Product added.");
+ });
+}
+function openBill(){
+ if(!data.products.length)return toast("Add a product first.");
+ const options=data.products.map(p=>`<option value="${p.id}">${safe(p.name)} — ${money(p.price)} (stock ${p.stock})</option>`).join("");
+ openModal("Create Sales Bill",`<div class="form-grid">
+ <div class="field"><label>Invoice Number</label><input id="bNo" value="SHR-${Date.now().toString().slice(-6)}"></div>
+ <div class="field"><label>Date</label><input id="bDate" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+ <div class="field" style="grid-column:1/-1"><label>Customer Name</label><input id="bCustomer" value="Walk-in Customer"></div>
+ <div class="field" style="grid-column:1/-1"><label>Product</label><select id="bProduct" onchange="billPriceChange()">${options}</select></div>
+ <div class="field"><label>Quantity</label><input id="bQty" type="number" min="1" value="1"></div>
+ <div class="field"><label>Unit Price</label><input id="bPrice" type="number" min="0" value="${data.products[0].price}"></div>
+ <div class="field"><label>Discount</label><input id="bDiscount" type="number" min="0" value="0"></div>
+ <div class="field"><label>Payment Received</label><input id="bPaid" type="number" min="0" value="0"></div>
+ </div><p class="sub">Saving a bill deducts the sold quantity from available stock.</p>`,saveBill);
+}
+function billPriceChange(){const p=data.products.find(p=>p.id===Number(document.getElementById("bProduct").value));if(p)document.getElementById("bPrice").value=p.price}
+function saveBill(){
+ const p=data.products.find(p=>p.id===Number(document.getElementById("bProduct").value));
+ const qty=Math.floor(Number(document.getElementById("bQty").value)),price=Number(document.getElementById("bPrice").value),discount=Number(document.getElementById("bDiscount").value)||0,paid=Number(document.getElementById("bPaid").value)||0;
+ if(!p||!Number.isFinite(qty)||qty<1||price<0||discount<0)return toast("Check quantity, price and discount.");
+ if(qty>p.stock)return toast("Not enough stock available.");
+ const subtotal=qty*price,total=Math.max(0,subtotal-discount);
+ if(paid<0||paid>total)return toast("Payment must be between zero and bill total.");
+ data.bills.push({id:Date.now(),invoice:document.getElementById("bNo").value,date:document.getElementById("bDate").value,item:p.name,productId:p.id,qty,price,subtotal,discount,total,paid,customer:document.getElementById("bCustomer").value});
+ p.stock-=qty;persist();closeModal();toast("Bill saved and stock updated.");
+}
+function saveSettings(){const n=document.getElementById("businessName").value.trim();if(!n)return toast("Enter a business name.");document.title=n+" | SHREE ERP";toast("Business name updated.");}
+render();
+</script>
+</body>
+</html>
